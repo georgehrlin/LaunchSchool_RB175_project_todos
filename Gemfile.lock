@@ -6,6 +6,9 @@ GEM
     logger (1.7.0)
     multi_json (1.21.1)
     mustermann (3.1.1)
+    nio4r (2.7.5)
+    puma (8.0.1)
+      nio4r (~> 2.0)
     rack (3.2.6)
     rack-protection (4.2.1)
       base64 (>= 0.1.0)
@@ -35,6 +38,7 @@ PLATFORMS
 
 DEPENDENCIES
   erubi
+  puma
   sinatra
   sinatra-contrib
   webrick
