@@ -1,0 +1,50 @@
+<section id="todos" class="<%= generate_class_complete(@list) %>">
+  <header>
+    <h2><%= @list[:name] %></h2>
+    <ul>
+      <li>
+        <form action="/lists/<%= @list_id %>/complete_all" method="post">
+          <button class="check" type="submit">Complete All</button>
+        </form>
+      </li>
+      <li>
+        <a class="edit" href="/lists/<%= @list_id %>/edit_list">Edit List</a>
+      </li>
+    </ul>
+  </header>
+  <ul>
+  <!-- My own attempt at Assignment 24 -->
+  <!-- todos_sorted = sort_todos_complete_first_incomplete_last(@list[:todos]) -->
+  <!-- todos_sorted.each_with_index do |todo, index| -->
+      <% sort_todos(@list[:todos]) do |todo, index| %>
+      <li class="<%= todo[:completed] ? "complete" : "" %>">
+        <form action="/lists/<%= @list_id %>/todos/<%= index %>" method="post" class="check">
+          <input type="hidden" name="completed" value="<%= !todo[:completed] %>">
+          <button type="submit" name="todo_index" value="<%= index %>"></button>
+        </form>
+
+        <h3><label for="todo"><%= "#{todo[:name]}" %></label></h3>
+        <form action="/lists/<%= @list_id %>/todos/<%= index %>/delete" method="post" class="delete">
+          <button type="submit" name="todo_index" value="<%= index %>">Delete</button>
+        </form>
+      </li>
+    <% end %>
+  </ul>
+
+<form action="/lists/<%= @list_id %>/todos" method="post">
+  <dl>
+    <dt>
+      <label for="todo">Enter a new todo item:</label>
+    </dt>
+    <dd>
+      <input name="todo" id="todo" type="text" placeholder="Something to do" value="<%= params[:todo] %>">
+    </dd>
+  </dl>
+  <fieldset>
+    <input type="submit" value="Add">
+  </fieldset>
+</form>
+
+<% content_for :header_links do %>
+  <a class="list" href="/lists">All Lists</a>
+<% end %>

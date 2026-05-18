@@ -1,0 +1,19 @@
+<ul id="lists">
+<!-- My own attempt at Assignment 24 -->
+<!-- sort_lists_complete_first_incomplete_last(@lists).each do |list| -->
+    <% sort_lists(@lists) do |list, index| %>
+    <li class="<%= generate_class_complete(list) %>">
+      <a>
+        <h2><a href=<%= %(/lists/#{index}) %>>
+              <%= list[:name] %>
+            </a>
+        </h2>
+      </a>
+        <p><%= generate_todos_fraction(list) %></p>
+    </li>
+  <% end %>
+</ul>
+
+<% content_for :header_links do %>
+  <a class="add" href="/lists/new">New List</a>
+<% end %>
