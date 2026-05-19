@@ -15,12 +15,12 @@
   <ul>
     <% sort_todos(@list[:todos]) do |todo, index| %>
       <li class="<%= todo[:completed] ? "complete" : "" %>">
-        <form action="/lists/<%= @list_id %>/todos/<%= index %>" method="post" class="check">
+        <form class="check" action="/lists/<%= @list_id %>/todos/<%= index %>" method="post">
           <input type="hidden" name="completed" value="<%= !todo[:completed] %>">
           <button type="submit" name="todo_index" value="<%= index %>"></button>
         </form>
         <h3><label for="todo"><%= "#{todo[:name]}" %></label></h3>
-        <form action="/lists/<%= @list_id %>/todos/<%= index %>/delete" method="post" class="delete">
+        <form class="delete" action="/lists/<%= @list_id %>/todos/<%= index %>/delete" method="post">
           <button type="submit" name="todo_index" value="<%= index %>">Delete</button>
         </form>
       </li>
