@@ -8,18 +8,17 @@
         </form>
       </li>
       <li>
-        <a class="edit" href="/lists/<%= @list_id %>/edit_list">Edit List</a>
+        <a class="edit" href="/lists/<%= @list_id %>/edit">Edit List</a>
       </li>
     </ul>
   </header>
   <ul>
-      <% sort_todos(@list[:todos]) do |todo, index| %>
+    <% sort_todos(@list[:todos]) do |todo, index| %>
       <li class="<%= todo[:completed] ? "complete" : "" %>">
         <form action="/lists/<%= @list_id %>/todos/<%= index %>" method="post" class="check">
           <input type="hidden" name="completed" value="<%= !todo[:completed] %>">
           <button type="submit" name="todo_index" value="<%= index %>"></button>
         </form>
-
         <h3><label for="todo"><%= "#{todo[:name]}" %></label></h3>
         <form action="/lists/<%= @list_id %>/todos/<%= index %>/delete" method="post" class="delete">
           <button type="submit" name="todo_index" value="<%= index %>">Delete</button>
