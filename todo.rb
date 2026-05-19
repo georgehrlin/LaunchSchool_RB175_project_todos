@@ -46,40 +46,6 @@ helpers do
     incomplete_todos.each { |todo| yield(todo, todos.index(todo)) }
     complete_todos.each { |todo| yield(todo, todos.index(todo)) }
   end
-
-=begin
-  # My own attempt at Assignment 24
-  def sort_lists_complete_first_incomplete_last(lists)
-    lists.sort do |a, b|
-      if incomplete_list?(a) && complete_list?(b)
-        -1
-      elsif complete_list?(a) && incomplete_list?(b)
-        1
-      elsif empty_list?(a) && empty_list?(b)
-        0
-      elsif empty_list?(a)
-        -1
-      elsif empty_list?(b)
-        1
-      else
-        0
-      end
-    end
-  end
-
-  # My own attempt at Assignment 24
-  def sort_todos_complete_first_incomplete_last(todos)
-    todos.sort do |a, b|
-      if !a[:completed] && b[:completed]
-        -1
-      elsif a[:completed] && !b[:completed]
-        1
-      else
-        0
-      end
-    end
-  end
-=end
 end
 
 before do
@@ -90,47 +56,12 @@ get "/" do
   redirect "/lists"
 end
 
-def sort_lists_complete_first_incomplete_last!(lists)
-  lists.sort! do |list_a, list_b|
-    if complete_list?(list_a) && !complete_list?(list_b)
-      1
-    elsif !complete_list?(list_a) && complete_list?(list_b)
-      -1
-    else
-      0
-    end
-  end
-end
-
-def sort_todos_complete_first_incomplete_last!(todos)
-  todos.sort! do |todo_a, todo_b|
-    if todo_a[:completed] && !todo_b[:completed]
-      1
-    elsif !todo_a[:completed] && todo_b[:completed]
-      -1
-    else
-      0
-    end
-  end
-end
-
-def sort_complete_first_incomplete_last!(array)
-  array.sort! do |a, b|
-    if yield(a) && !yield(b)
-      1
-    elsif !yield(a) && yield(b)
-      -1
-    else
-      0
-    end
-  end
-end
-
 # Return an error message if the name is invalid. Return nil if name is valid
-def error_for_list_name(name)
+# exclude_list = nil is added so no validation error is created when the same list name is entered
+def error_for_list_name(name, exclude_list = nil)
   if !(1..100).cover?(name.size)
     "List name must be between 1 and 100 characters."
-  elsif session[:lists].any? { |list| list[:name] == name }
+  elsif session[:lists].any? { |list| list != exclude_list && list[:name] == name }
     "List name must be unique."
   end
 end
@@ -167,25 +98,24 @@ post "/lists" do
 end
 
 # View a list's todos
-get "/lists/:id" do
-  @list_id = params[:id].to_i
+get "/lists/:list_id" do
+  @list_id = params[:list_id].to_i
   @list = session[:lists][@list_id]
   erb :list, layout: :layout
 end
 
 # Enter the page to edit an existing list
-get "/lists/:id/edit_list" do
-  id = params[:id].to_i
+get "/lists/:list_id/edit_list" do
   @list = session[:lists][id]
   erb :edit_list, layout: :layout
 end
 
 # Edit a list's name
-post "/lists/:id" do
-  @list_id = params[:id].to_i
-  new_list_name = params[:list_name].strip
+post "/lists/:list_id" do
+  @list_id = params[:list_id].to_i
   @list = session[:lists][@list_id]
-  error = error_for_list_name(new_list_name)
+  new_list_name = params[:list_name].strip
+  error = error_for_list_name(new_list_name, @list)
 
   if error
     session[:error] = error
@@ -193,13 +123,13 @@ post "/lists/:id" do
   else
     @list[:name] = new_list_name
     session[:success] = "The list name has been updated."
-    redirect "/lists/#{id}"
+    redirect "/lists/#{@list_id}"
   end
 end
 
 # Delete a list
-post "/lists/:id/delete" do
-  session[:lists].delete_at(params[:id].to_i)
+post "/lists/:list_id/delete" do
+  session[:lists].delete_at(params[:list_id].to_i)
   session[:success] = "The list has been deleted."
   redirect "/lists"
 end
@@ -234,8 +164,8 @@ post "/lists/:list_id/todos/:todo_id" do
 end
 
 # Mark all todos of the list as complete
-post "/lists/:id/complete_all" do
-  @list_id = params[:id].to_i
+post "/lists/:list_id/complete_all" do
+  @list_id = params[:list_id].to_i
   @list = session[:lists][@list_id]
   @list[:todos].each { |todo| todo[:completed] = true }
   session[:success] = "All todos have been marked complete."

@@ -13,9 +13,6 @@
     </ul>
   </header>
   <ul>
-  <!-- My own attempt at Assignment 24 -->
-  <!-- todos_sorted = sort_todos_complete_first_incomplete_last(@list[:todos]) -->
-  <!-- todos_sorted.each_with_index do |todo, index| -->
       <% sort_todos(@list[:todos]) do |todo, index| %>
       <li class="<%= todo[:completed] ? "complete" : "" %>">
         <form action="/lists/<%= @list_id %>/todos/<%= index %>" method="post" class="check">
@@ -30,6 +27,7 @@
       </li>
     <% end %>
   </ul>
+</section>
 
 <form action="/lists/<%= @list_id %>/todos" method="post">
   <dl>
