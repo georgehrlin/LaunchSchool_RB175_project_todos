@@ -1,4 +1,5 @@
 <section id="todos" class="<%= generate_class_complete(@list) %>">
+
   <header>
     <h2><%= @list[:name] %></h2>
     <ul>
@@ -12,16 +13,17 @@
       </li>
     </ul>
   </header>
+
   <ul>
-    <% sort_todos(@list[:todos]) do |todo, index| %>
+    <% sort_todos(@list[:todos]) do |todo| %>
       <li class="<%= todo[:completed] ? "complete" : "" %>">
-        <form class="check" action="/lists/<%= @list_id %>/todos/<%= index %>" method="post">
+        <form class="check" action="/lists/<%= @list_id %>/todos/<%= todo[:id] %>" method="post">
           <input type="hidden" name="completed" value="<%= !todo[:completed] %>">
-          <button type="submit" name="todo_index" value="<%= index %>"></button>
+          <button type="submit"></button>
         </form>
         <h3><label for="todo"><%= "#{todo[:name]}" %></label></h3>
-        <form class="delete" action="/lists/<%= @list_id %>/todos/<%= index %>/delete" method="post">
-          <button type="submit" name="todo_index" value="<%= index %>">Delete</button>
+        <form class="delete" action="/lists/<%= @list_id %>/todos/<%= todo[:id] %>/delete" method="post">
+          <button type="submit">Delete</button>
         </form>
       </li>
     <% end %>

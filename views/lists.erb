@@ -1,7 +1,7 @@
 <ul id="lists">
-    <% sort_lists(@lists) do |list, index| %>
+    <% sort_lists(@lists) do |list| %>
     <li class="<%= generate_class_complete(list) %>">
-        <h2><a href=<%= %(/lists/#{index}) %>><%= list[:name] %></a></h2>
+        <h2><a href=<%= %(/lists/#{list[:id]}) %>><%= list[:name] %></a></h2>
         <p><%= generate_todos_fraction(list) %></p>
     </li>
   <% end %>
